@@ -12,7 +12,7 @@ Finally the program will print out a table showcasing the chosen private keys, t
 
 CONSTRAINTS
 
-jUnit and Jupiter modules may have to be imported
+jUnit and Jupiter modules may have to be imported in order to run the testing modules
 
 
 
