@@ -216,13 +216,5 @@ public class Diffie_hellman {
 	
 	
 	
-	/*
-	 * TO DO 
-	 * 
-	 * Clean up code
-	 * Finish Unit testing
-	 * Test in older java
-	 * 
-	 */
 	
 }
