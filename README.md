@@ -1,4 +1,4 @@
-# DH-Java
+# Diffie Hellman-Java
 
 README
 
