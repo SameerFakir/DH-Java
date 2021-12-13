@@ -2,6 +2,8 @@
 
 README
 
+This program is used to emulate how the Diffie-Hellman key exchange is used. It calculates the shared secret key between two clients as within real life settings. This specific implementation lets the user select the base and modulus values, as well as letting them select the private keys for both clients. It then calculates and outputs all keys involved in a table format within the console.
+
 How to run:
 
 Run Diffie_Hellman.java in chosen Java environment. 
