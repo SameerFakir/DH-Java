@@ -1,5 +1,7 @@
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.math.BigInteger;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -17,29 +19,35 @@ class Test_Diffie_Hellman {
 	    assertEquals(true, Diffie_hellman.isPrime(y));
 	    
 	    int z = -17;
-	    assertEquals(true, Diffie_hellman.isPrime(z));
+	    assertEquals(false, Diffie_hellman.isPrime(z));
 
 	}
 	
 	
 	@Test
-	@DisplayName("")
+	@DisplayName("Output of public key should be mathematically correct")
 	public void testGeneratePublicKey() 
 	{
 	    int mod = 23;
 	    int base = 5;
 	    int priKey = 4;
-	    assertEquals(4, Diffie_hellman.generatePublicKey(mod,base,priKey));
+	    
+	    BigInteger result = new BigInteger("4");
+	    
+	    assertEquals(result, Diffie_hellman.generatePublicKey(mod,base,priKey));
 	}
 	
 	@Test
+	@DisplayName("Output of secret key should be mathematically correct")
 	public void testGenerateSecretKey() 
 	{
 	    int mod = 23;
 	    int priKey = 4;
-	    int pubKey = 10;
+	    BigInteger pubKey = new BigInteger("10");
 	    
-	    assertEquals(18, Diffie_hellman.generateSecretKey(mod,priKey,pubKey));
+	    BigInteger result = new BigInteger("18");
+	    
+	    assertEquals(result, Diffie_hellman.generateSecretKey(mod,priKey,pubKey));
 	}
 	
 

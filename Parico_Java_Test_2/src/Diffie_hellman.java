@@ -1,3 +1,4 @@
+import java.math.BigInteger;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -5,58 +6,73 @@ public class Diffie_hellman {
 	
 	public static void main(String[] args){
 		
+		// Obtain modulus input
 		int p = getModulus();
+		
+		// Obtain base input
 		int g = getBase();
 		
-		// Alice's private key
-		System.out.println("Enter Alice's Private Key: ");
-		int alicePrivateKey = getPriKeyInput();
+		// Obtain Alice's private key
+		System.out.print("Enter Alice's Private Key: ");
+		int alicePriKey = getPriKeyInput();
 		
-		// Bob's private key
-		System.out.println("Enter Bob's Private Key: ");
-		int bobPrivateKey = getPriKeyInput();
+		// Obtain Bob's private key
+		System.out.print("Enter Bob's Private Key: ");
+		int bobPriKey = getPriKeyInput();
 		
-		generate_keys(p,g,alicePrivateKey,bobPrivateKey);
+		// Method used to generate and print all new keys
+		generate_keys(p,g,alicePriKey,bobPriKey);
 	}
+	
+	/*
+	 * @return	p	Prompts user to enter prime number for modulus value, returns modulus value entry				
+	 */
 	
 	public static int getModulus(){
-		System.out.println("Enter Modulus value: ");
-		int p = getPrimeInput();
-		return p;
+		System.out.print("Enter Modulus value: ");
+		int mod = getPrimeInput();
+		return mod;
 	}
 	
+	/*
+	 * @return	g	Prompts user to enter prime number for base value, returns base value entry				
+	 */
 	
 	public static int getBase(){
-		System.out.println("Enter Base value: ");
-		int g = getPrimeInput();
-		return g;
+		System.out.print("Enter Base value: ");
+		int base = getPrimeInput();
+		return base;
 	}
 	
-	
+	/*
+	 * @return	chosenPrime	Processes user input to verify if acceptable as integer for private keys				
+	 */
 	
 	public static int getPrimeInput(){
-		//Boolean check to loop until valid input
+		// Boolean check to loop until valid input
 		boolean valid = false;
 		
-		//Do loop for exception handling on incorrect input
+		// Do loop for exception handling on incorrect input
 		do {
+			
 			try {
-				//Scanner used to take user input
+				// Scanner used to take user input
 				Scanner sc = new Scanner(System.in);
-				int g = sc.nextInt();
-				//If taken as int, check passed and input returned, loop ends
-				//Check if input is prime
-				if(isPrime(g)==true){
+				int chosenPrime = sc.nextInt();
+				
+				// Check if input is prime
+				if(isPrime(chosenPrime)==true){
 					valid = true;
-					return g;
+					return chosenPrime;
 				}
 				else{
-					System.out.println("Input is not a prime number");
-					//Input loop continues as number is not prime
+					System.out.println("Input must be a prime number greater than 1");
+					// Input loop continues as number is not prime
 				}
+				
 			} catch (InputMismatchException e) {
-				//If unable to read as int, check not passed, loop continues
-				System.out.println("Invalid Input, enter an integer");
+				// If unable to read as int, check not passed, loop continues
+				System.out.println("Invalid Input, enter a positive prime number");
 			}
 			return getPrimeInput();
 		} while (valid);
@@ -64,22 +80,32 @@ public class Diffie_hellman {
 		
 	}
 	
+	/*
+	 * @return	key		Processes user input to verify if acceptable as integer for private keys				
+	 */
+	
 	public static int getPriKeyInput(){
-		//Boolean check to loop until valid input
+		// Boolean check to loop until valid input
 		boolean valid = false;
 		
-		//Do loop for exception handling on incorrect input
+		// Do loop for exception handling on incorrect input
 		do {
 			try {
-				//Scanner used to take user input
+				// Scanner used to take user input
 				Scanner sc = new Scanner(System.in);
-				int g = sc.nextInt();
-				//If taken as int, check passed and input returned, loop ends
-				valid = true;
-				return g;
+				int key = sc.nextInt();
+				// If taken as int, check passed and input returned, loop ends
+				if(key < 1) {
+					valid = false;
+					System.out.println("Private key must be positive integer");
+				}
+				else {
+					valid = true;
+					return key;
+				}
 			} catch (InputMismatchException e) {
-				//If unable to read as int, check not passed, loop continues
-				System.out.println("Invalid Input, enter an integer");
+				// If unable to read as int, check not passed, loop continues
+				System.out.println("Invalid Input, enter a positive integer");
 			}
 			return getPriKeyInput();
 		} while (valid);
@@ -88,61 +114,61 @@ public class Diffie_hellman {
 	}
 	
 	/*
-	 * @param 	modulus - 
-	 * @param 	base - 
-	 * @param 	alicePrivateKey - 
-	 * @param 	bobPrivateKey - 
-	 * @return	null 
+	 * @param 	mod  			Modulus input that the user has selected 
+	 * @param 	base  			Base input that the user has selected
+	 * @param 	alicePriKey 	Alice's inputed private key
+	 * @param 	bobPriKey 		Bob's inputed private key
+	 * @return	null				
 	 */
 	
-	public static void generate_keys(int modulus, int base, int alicePrivateKey, int bobPrivateKey) {
-		
-		//a = Alice 4
-		//b = Bob 3
-		//result for above should be 18
-		
-		//p = 157
-		//b = 967
 	
+	public static void generate_keys(int mod, int base, int alicePriKey, int bobPriKey) {
 		
 		// Alice's encrypted message to Bob
-		long alicePublicKey = generatePublicKey(modulus,base,alicePrivateKey);
-		System.out.println("Alice's public key: " + String.valueOf(alicePublicKey));
+		BigInteger alicePubKey = generatePublicKey(mod,base,alicePriKey);
 		
 		// Bob's encrypted message to Alice
-		long bobPublicbKey = generatePublicKey(modulus,base,bobPrivateKey);
-		System.out.println("Bob's public key: " + String.valueOf(bobPublicbKey));
+		BigInteger bobPubKey = generatePublicKey(mod,base,bobPriKey);
+		
 		
 		// Alice generates shared secret key
-		long aSecKey = generateSecretKey(modulus,alicePrivateKey,bobPublicbKey);
-		System.out.println("Alice's shared secret key is: " + String.valueOf(aSecKey));
+		BigInteger aliceSecKey = generateSecretKey(mod,alicePriKey,bobPubKey);
 		
 		// Bob generates shared secret key
-		long bSecKey = generateSecretKey(modulus,bobPrivateKey,alicePublicKey);
-		System.out.println("Bob's shared secret key is: " + String.valueOf(bSecKey));
+		BigInteger bobSecKey = generateSecretKey(mod,bobPriKey,alicePubKey);
 		
-		// TEST System.out.println("Test : " + String.valueOf( (long) Math.pow(967, 4) % 157));
+		System.out.println("\nBase used:    " + String.format("%7d",base));
+		System.out.println("Modulus used: " + String.format("%7d",mod));
+		
+		
+		System.out.println(
+						"\nName  | Private Key | Public Key | Shared Key\n"
+						+ "------+-------------+------------+-----------" 
+						+ "\nAlice | " + String.format("%11d",alicePriKey) + " | " + String.format("%10d",alicePubKey) + " | " + String.format("%10d",aliceSecKey) 
+						+ "\nBob   | " + String.format("%11d",bobPriKey) + " | " + String.format("%10d",bobPubKey) + " | " + String.format("%10d",bobSecKey));
 		
 		return;
 	}
 	
 	/*
-	 * @param 	n - input integer to test if prime 
-	 * @return	boolean that indicates if input is prime or not 
+	 * @param 	n	Input integer to test if prime 
+	 * @return		Boolean that indicates if input is prime or not 
 	 */
 	
 	public static boolean isPrime(int n) {
-		// n -
-        if((n > 2 && n % 2 == 0) || n == 1) { //removes 1 and even numbers over 2
+	
+        if((n > 2 && n % 2 == 0) || n < 1 ) { 
+        	// Checks if number is divisible by 2 or if number is less than 1 in which case they are not prime
             return false;
         }
 
         for (int i = 3; i <= (int)Math.sqrt(n); i += 2) { 
-        		//only checks odds numbers
-        		//goes up to square root of n for efficiency 
+        		// Only checks odds numbers (as all even over 2 are not prime)
+        		// Goes up to square root of n for efficiency 
 
             if (n % i == 0) {
-            		//checks if odd number can divide into input
+            	// Checks if n can divide into odd number i 
+            	// If so then n is not a prime
             	
                 return false;
             }
@@ -152,42 +178,36 @@ public class Diffie_hellman {
     }
 
 	/*
-	 * @param 	modulus - 
-	 * @param 	base - 
-	 * @param 	alicePrivateKey - 
-	 * @param 	bobPrivateKey - 
-	 * @return	null 
+	 * @param 	mod  	Modulus input that the user has selected 
+	 * @param 	base  	Base input that the user has selected
+	 * @param 	priKey 	User's selected private key
+	 * @return	pubKey	Returns newly calculated public key using previous parameters	
 	 */
 	
-	public static long generatePublicKey(int mod, int base, long priKey){
+	public static BigInteger generatePublicKey(int mod, int base, int priKey){
 		
-		//Method to generate public key given modulus, base and private key
-		long pubKey = (long) Math.pow(base, priKey) % mod;
+		// BigInteger used for calculation as output may go outside constraints of integer value type
+		BigInteger pubKey = (
+				BigInteger.valueOf(base)
+				.pow(priKey))
+				.mod(BigInteger.valueOf(mod));
 		
-		/* System.out.println(
-				String.valueOf(newKey) + " = " 
-				+ String.valueOf(base)
-				+ "^" + String.valueOf(priKey)
-				+ " mod " + String.valueOf(mod)
-		);
-		// int pubKey = Math.toIntExact(newKey);
-		 */
 		return pubKey;
 	}
 	
-	public static long generateSecretKey(int mod, long priKey, long pubKey){
+	/*
+	 * @param 	mod  	Modulus input that the user has selected 
+	 * @param 	priKey  Base input that the user has selected as their private key
+	 * @param 	pubKey 	Previously generated public key is used to calculate secret key
+	 * @return	secKey	Returns newly calculated shared secret key using previous parameters	
+	 */
+	
+	public static BigInteger generateSecretKey(int mod, int priKey, BigInteger pubKey){
 		
-		//Method to generate secret key given modulus, public key and own private key
-		long secKey = (long) Math.pow(pubKey, priKey) % mod;
-		/*
-		System.out.println(
-				String.valueOf(newKey) + " = " 
-				+ String.valueOf(pubKey)
-				+ "^" + String.valueOf(priKey)
-				+ " mod " + String.valueOf(mod)
-		);
-		int secKey = Math.toIntExact(newKey);
-		*/
+		// BigInteger used for calculation as output may go outside constraints of integer value type
+		BigInteger secKey =  (pubKey.pow(priKey))
+							.mod(BigInteger.valueOf(mod));
+		
 		return secKey;
 	}
 
